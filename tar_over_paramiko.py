@@ -20,7 +20,22 @@ ssh.connect(
         pkey=key,
         )
 
-stdin, stdout, stderr = ssh.exec_command('tar cf - {}'.format(sys.argv[4]))
+tarlist = 'tarlist.txt'
+find_cmd = 'find {} -type f > {}'.format(sys.argv[4], tarlist)
+
+stdin, stdout, stderr = ssh.exec_command('sh')
+stdin.write(find_cmd)
+
+stdin.flush()
+stdin.channel.shutdown_write()
+
+for l in stdout:
+    print('[FIND STDOUT]\t{}'.format(l.strip('\n')))
+
+for l in stderr:
+    print('[FIND STDOUT]\t{}'.format(l.strip('\n')))
+
+stdin, stdout, stderr = ssh.exec_command('tar cf - -T {}'.format(tarlist))
 stderr_lines = 0
 stdout_lines = 0
 stdout_type = None
@@ -53,4 +68,5 @@ print(f"Type of stdout line is {stdout_type}")
 for tarinfo in tar_obj:
     print(tarinfo)
 
+tar_obj.close()
 ssh.close()
