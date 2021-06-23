@@ -47,10 +47,14 @@ tar_data = io.BytesIO()
 tar_file = open('/tmp/tartest', 'wb')
 
 for l in stdout:
-    tar_data.write(l.encode())
-    tar_file.write(l.encode())
+    l_byte = l.encode()
+    tar_data.write(l_byte)
+    tar_file.write(l_byte)
+
     stdout_lines += 1
     stdout_type = type(l)
+
+    print('[TAR{}]\tReceived {} bytes'.format(stdout_lines, len(l_byte)))
 
 for l in stderr:
     print("[STDERR]\t{}".format(l.strip('\n')))
