@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import paramiko, sys, os, io, tarfile
+import paramiko, sys, os, io, tarfile, subprocess
 from pathlib import Path
 
 if len(sys.argv) != 5:
@@ -43,11 +43,20 @@ stdout_type = None
 stdin.flush()
 stdin.channel.shutdown_write()
 
+untar = subprocess.Popen(
+        ["tar", "xf", "-"],
+        stdin=subprocess.PIPE,
+        stdout=subprocess.DEVNULL,
+        )
+
 tar_data = io.BytesIO()
 tar_file = open('/tmp/tartest', 'wb')
 
 for l in stdout:
     l_byte = l.encode()
+
+    untar.stdin.write(l_byte)
+
     tar_data.write(l_byte)
     tar_file.write(l_byte)
 
@@ -61,6 +70,7 @@ for l in stderr:
     stderr_lines += 1
 
 tar_file.close()
+untar.stdin.close()
 
 tar_data.seek(0)
 tar_obj = tarfile.open(fileobj=tar_data, mode='r')
