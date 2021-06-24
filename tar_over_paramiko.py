@@ -20,8 +20,7 @@ ssh.connect(
         pkey=key,
         )
 
-tarlist = 'tarlist.txt'
-find_cmd = 'find {} -type f > {}'.format(sys.argv[4], tarlist)
+find_cmd = 'find {} -type f'.format(sys.argv[4])
 
 stdin, stdout, stderr = ssh.exec_command('sh')
 stdin.write(find_cmd)
@@ -29,16 +28,21 @@ stdin.write(find_cmd)
 stdin.flush()
 stdin.channel.shutdown_write()
 
+paths = []
+
 for l in stdout:
-    print('[FIND STDOUT]\t{}'.format(l.strip('\n')))
+    paths.append(l.strip('\n'))
+    print('[FIND STDOUT]\t{}'.format(paths[-1]))
 
 for l in stderr:
-    print('[FIND STDOUT]\t{}'.format(l.strip('\n')))
+    print('[FIND STDERR]\t{}'.format(l.strip('\n')))
 
-stdin, stdout, stderr = ssh.exec_command('tar cf - -T {}'.format(tarlist))
+stdin, stdout, stderr = ssh.exec_command('tar cf - -T -')
 stderr_lines = 0
 stdout_lines = 0
 stdout_type = None
+
+stdin.write("\n".join(paths))
 
 stdin.flush()
 stdin.channel.shutdown_write()
