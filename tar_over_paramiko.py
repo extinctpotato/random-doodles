@@ -31,13 +31,14 @@ stdin.channel.shutdown_write()
 paths = []
 
 for l in stdout:
-    paths.append(l.strip('\n'))
-    print('[FIND STDOUT]\t{}'.format(paths[-1]))
+    paths.append(l.strip('\n').split(sys.argv[4] + '/')[1])
+    print('[FIND STDOUT]\t{}'.format(l.strip('\n')))
+    print('[FIND ALTERD]\t{}'.format(paths[-1]))
 
 for l in stderr:
     print('[FIND STDERR]\t{}'.format(l.strip('\n')))
 
-stdin, stdout, stderr = ssh.exec_command('tar cf - -T -')
+stdin, stdout, stderr = ssh.exec_command('tar cf - -C {} -T -'.format(sys.argv[4]))
 stderr_lines = 0
 stdout_lines = 0
 stdout_type = None
