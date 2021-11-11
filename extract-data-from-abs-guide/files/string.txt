@@ -25,3 +25,5 @@
 
    -z
           string is null, that is, has zero length
+
+          if [ -z "$a" ]
