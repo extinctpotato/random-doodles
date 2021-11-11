@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import glob
+from pytablewriter import MarkdownTableWriter
 
 def chunks(lst, n):
     """Yield successive n-sized chunks from lst."""
@@ -36,4 +37,9 @@ for input in inputs:
     else:
         value_matrix = chunks(lines, 3)
 
-    print(list(value_matrix))
+    md_writer = MarkdownTableWriter(
+            table_name="Placeholder",
+            headers=['op', 'desc', 'example'],
+            value_matrix=value_matrix,
+            )
+    md_writer.write_table()
