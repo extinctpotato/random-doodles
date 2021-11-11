@@ -47,22 +47,3 @@
           is greater than or equal to (within double parentheses)
 
           (("$a" >= "$b"))
-
-   string comparison
-
-   =
-          is equal to
-
-          if [ "$a" = "$b" ]
-
-          Caution
-
-   Note the whitespace framing the =.
-   if [ "$a"="$b" ] is not equivalent to the above.
-
-   ==
-          is equal to
-
-          if [ "$a" == "$b" ]
-
-          This is a synonym for =.
