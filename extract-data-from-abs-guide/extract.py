@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import glob
+import os, glob
 from pytablewriter import MarkdownTableWriter
 
 def chunks(lst, n):
@@ -13,7 +13,8 @@ inputs = glob.glob('files/*.txt')
 TEMPLATE_CC = '# TEMPLATE: '
 
 for input in inputs:
-    print(input)
+    table_name = os.path.basename(input).split('.')[0].capitalize()
+
     with open(input, 'r') as f:
         lines = f.readlines()
 
@@ -35,10 +36,13 @@ for input in inputs:
                     template.strip().format(value_matrix[idx][0])
                     )
     else:
-        value_matrix = chunks(lines, 3)
+        value_matrix = list(chunks(lines, 3))
+
+    for idx in range(len(value_matrix)):
+        value_matrix[idx][2] = "`{}`".format(value_matrix[idx][2])
 
     md_writer = MarkdownTableWriter(
-            table_name="Placeholder",
+            table_name=table_name,
             headers=['op', 'desc', 'example'],
             value_matrix=value_matrix,
             )
