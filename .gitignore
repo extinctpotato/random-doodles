@@ -1,1 +1,3 @@
 tar_tests_*/**
+**/__pycache__
+**/.env
