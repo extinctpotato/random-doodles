@@ -18,6 +18,7 @@ for input in inputs:
     with open(input, 'r') as f:
         lines = f.readlines()
 
+    # Ignore empty files.
     if not len(lines):
         continue
 
@@ -26,8 +27,10 @@ for input in inputs:
     if lines[0].startswith(TEMPLATE_CC):
         template = lines.pop(0).split(TEMPLATE_CC)[1]
 
+    # Strip whitespace and \n from lines and filter out empty lines.
     lines = list(filter(bool, [line.strip().replace('\n', '') for line in lines]))
 
+    # Add missing example field using detected template.
     if template:
         value_matrix = list(chunks(lines, 2))
 
@@ -38,6 +41,7 @@ for input in inputs:
     else:
         value_matrix = list(chunks(lines, 3))
 
+    # Surround example string with inline code backticks.
     for idx in range(len(value_matrix)):
         value_matrix[idx][2] = "`{}`".format(value_matrix[idx][2])
 
