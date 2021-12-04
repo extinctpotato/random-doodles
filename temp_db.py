@@ -73,11 +73,34 @@ class TempLogger:
             print('writing {}'.format(result))
             self.write_to_db(result)
 
+    def collect_uart(self, iterations=5):
+        import Adafruit_BBIO.UART as UART
+        import serial
+
+        UART.setup("UART1")
+
+        ser = serial.Serial(port="/dev/ttyO1", baudrate=9600)
+        ser.close()
+        ser.open()
+
+        for _ in range(0, iterations):
+            min_val = 0
+            max_val = 0
+            sum_val = 0
+
+            result = float(ser.readline().decode().strip())
+            print('writing {}'.format(result))
+            self.write_to_db(result)
+
 if __name__ == '__main__':
     t = TempLogger()
 
     if os.environ.get('SHOW') is not None:
         t.read_all()
     else:
-        t.collect()
+        if os.environ.get('UART'):
+            print('uart')
+            t.collect_uart()
+        else:
+            t.collect()
         t.read_all()
